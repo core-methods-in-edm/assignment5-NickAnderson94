@@ -13,6 +13,7 @@ For this assignment we will be using data from the Assistments Intelligent Tutor
 library(rpart)
 library(party)
 library(ggplot2)
+library(knitr)
 
 ```
 
@@ -63,7 +64,6 @@ D1$advice <- ifelse(D1$score <=0.4, "intervene", ifelse(D1$score > 0.4 & D1$scor
 
 score_ctree <- ctree(factor(advice) ~ prior_prob_count + prior_percent_correct + hints, D1)
 
-
 ```
 
 #Plot tree
@@ -93,16 +93,18 @@ Compare the predicted advice with the actual advice that these studnts recieved.
 
 ```{r Error in model}
 
-#Look at the error of this tree
-printcp(c.tree)
+D2$advice <- ifelse(D2$score <=0.4, "intervene", ifelse(D2$score > 0.4 & D2$score <=0.8, "monitor", "no action"))
 
-#recode into new variable
-D1$advice1 <- ifelse(D1$advice == "intervene", 1, ifelse(D1$advice == "monitor", 2, 3))
+#recode into numeric variables to calculate error
+D2$prediction1 <- ifelse(D2$prediction == "intervene", 1, ifelse(D2$prediction == "monitor", 2, 3))
+D2$advice1 <- ifelse(D2$advice == "intervene", 1, ifelse(D2$advice == "monitor", 2, 3))
 
 #find difference
-sum(abs(D1$action - D1$advice1))
+sum(abs(D2$advice1 - D2$prediction1))
 
-#the sum of the absolute value is 332, which sounds quite large considering there were only 361 observations
+#the sum of the absolute value is 84, which isnt that bad since there were only 361 observations
+
+#percentage of errors = 23%
+84/361
 
 ```
-
